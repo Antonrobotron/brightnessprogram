@@ -1,0 +1,6 @@
+brightness is a simple program I made because I didn't want to bother with finding a brightness command I enjoyed using on arch linux. 
+the code may be a bit messy, but it should be simple enough to understand.
+
+How do I use this program on my Arch distro?
+Simple! go into the file and change the paths for MAXBRIGHT and BRIGHTNESS to where your maximum brightness and brightness files are located, and then compile with your C compiler. 
+If you don't have a C compiler, gcc is a free and easy one to use.
