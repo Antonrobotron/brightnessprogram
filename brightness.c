@@ -20,12 +20,19 @@ void itoa(char [], const int);
 
 int main(int argc, char *argv[]) {
 	//check for all the parameters needed
-	if (argc != 3) {
+	if (argc > 3) {
+		helpPrompt(argv[0]);
+		exit(0);
+	}
+	else if(argc == 2 && strcmp(argv[1], "get")) {
+		helpPrompt(argv[0]);
+		exit(0);
+	}
+	else if(argc < 2) {
 		helpPrompt(argv[0]);
 		exit(0);
 	}
 
-	
 	//init variables
 	int fd;
 	char buffer[100];
@@ -43,13 +50,30 @@ int main(int argc, char *argv[]) {
 	const int brightnessCurrent = atoi(buffer);
 	close(fd);
 
+	//if using get, print the current and max brightness, then exit
+	if(!strcmp(argv[1], "get")) {
+		printf("%d/%d\n", brightnessCurrent, brightnessMax);
+		exit(0);
+	}
+
+	//set new brightness
+	if(!strcmp(argv[2], "25%"))
+		brightnessNew = brightnessMax/4;
+	else if(!strcmp(argv[2], "50%"))
+		brightnessNew = brightnessMax/2;
+	else if(!strcmp(argv[2], "100%"))
+		brightnessNew = brightnessMax;
+	else if(strcmp(argv[1], "get"))
+		brightnessNew = atoi(argv[2]);
+
 	//if statements to check for add, sub, or set
 	if (!strcmp(argv[1], "add"))
-		brightnessNew = atoi(argv[2]) + brightnessCurrent;
+		brightnessNew += brightnessCurrent;
 	else if(!strcmp(argv[1], "sub")) 
-		brightnessNew = brightnessCurrent - atoi(argv[2]);
-	else if(!strcmp(argv[1], "set")) 
-		brightnessNew = atoi(argv[2]);
+		brightnessNew = brightnessCurrent - brightnessNew;
+//	else if(!strcmp(argv[1], "set"))
+//	since V1.1 checking for set is no longer needed
+//	because brightnessNew is set before checking for 2nd value
 
 	//check to make sure its above 0 and below max
 	if(brightnessNew < 1) {
@@ -76,8 +100,11 @@ int main(int argc, char *argv[]) {
 //Usage Message if someone does something wrong
 void helpPrompt(const char *str) {
 	printf("Usage: %s (add/sub/set) [amount]\n", str);
+	printf("Alternate use is to see the current brightness with:\n");
+	printf("%s get\n", str);
 	printf("%s is a command for arch linux that changes computer brightness\n", str);
 	printf("%s will never allow for 0 brightness.\n", str);
+	printf("Amount can be replaced with 25%%, 50%%, or 100%%\n");
 }
 
 //Function that reads all data from a file until theres a new line
